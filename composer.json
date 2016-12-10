@@ -1,0 +1,17 @@
+{
+    "name": "bunkermaster/toolbox",
+    "description": "Boite a outils pour semaine intensive PHP web 1",
+    "authors": [
+        {
+            "name": "bunkermaster",
+            "email": "yann.le-scouarnec@hetic.net"
+        }
+    ],
+    "require": {},
+    "autoload":{
+        "psr-4":{
+            "ToolBox\\":"toolbox/"
+        },
+        "files":["toolbox/conf.php"]
+    }
+}
