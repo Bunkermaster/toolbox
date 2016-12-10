@@ -3,13 +3,24 @@
 ## Créer la base de données locale
 Créer la base de données de votre projet
 
-## Configurer la connection base de données
-Pour configurer l'accès à la base de donnée, nous utiliserons des constantes d'espace de nom. Elles sont initialisées dans le fichier ci-dessous.
+## Composer
+### Installer composer
+[Composer](https://getcomposer.org/download/)
+
+### Installer la ToolBox
+Composer définit l'autoload de la ToolBox. Lancer la commande suivante dans le terminal:
 ```
-lib/conf.php
+cd repertoire/de/votre/projet/
+composer dumpautoload
 ```
 
-Ce fichier contient la déclaration de toutes les constantes de connection PDO comme suit:
+## Configurer la connection base de données
+Pour configurer l'accès à la base de donnée, nous utiliserons des constantes d'espace de nom. Elles sont initialisées dans le fichier suivant :
+```
+toolbox/conf.php
+```
+
+Ce fichier contient la déclaration de toutes les constantes de connection PDO comme suit :
 ``` php
 <?php
 namespace ToolBox;
