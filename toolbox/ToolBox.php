@@ -29,6 +29,10 @@ class ToolBox
      * @var null|string nom database
      */
     private static $db_name = null;
+    /**
+     * @var bool debug?
+     */
+    private static $db_debug = false;
 
     /**
      * @return \PDO
@@ -54,6 +58,7 @@ class ToolBox
         // si les constantes sont mal definies, exception 102
         if(
             !defined("\\ToolBox\\PHP_TOOLBOX_DB_PASS")
+            || !defined("\\ToolBox\\PHP_TOOLBOX_DB_DEBUG")
             || !defined("\\ToolBox\\PHP_TOOLBOX_DB_NAME")
             || !defined("\\ToolBox\\PHP_TOOLBOX_DB_HOST")
             || !defined("\\ToolBox\\PHP_TOOLBOX_DB_PORT")
@@ -61,6 +66,7 @@ class ToolBox
         ){
             throw new ToolBoxException("Constantes non définies dans le fichier de configuration toolbox/conf.php.",102);
         }
+        static::$db_debug = PHP_TOOLBOX_DB_DEBUG;
         static::$db_name = PHP_TOOLBOX_DB_NAME;
         static::$db_host = PHP_TOOLBOX_DB_HOST;
         static::$db_port = PHP_TOOLBOX_DB_PORT;
@@ -80,4 +86,59 @@ class ToolBox
         // Changement d'encodage de communication en UTF-8
         static::$database->exec("SET NAMES UTF8;");
     }
+
+    /**
+     * @param $tableName
+     * @param array $fields liste des champs
+     * @param string $where les conditions SQL
+     * @param array $values liste des valeurs ":index" => "valeur"
+     * @return mixed
+     */
+    public static function selectData(
+        $tableName,
+        array $fields = [],
+        $where = "",
+        array $values = []
+    )
+    {
+        $sql = "SELECT\n\t";
+        if($fields !== []){
+            $sql .= implode(",\n\t", $fields);
+        } else {
+            $sql .= "*\n";
+        }
+        $sql .= "\nFROM\n\t$tableName\n";
+        if($where !== ""){
+            $sql .= "WHERE\n\t$where\n";
+        }
+        $sql .= ";";
+        if(true === static::$db_debug){
+            echo $sql.PHP_EOL;
+        }
+        // prepare sql
+        $stmt = static::$database->prepare($sql);
+        if($values !== []){
+            foreach($values as $index => $value){
+                if(true === static::$db_debug) {
+                    echo "binding '$index' with value '$value'".PHP_EOL;
+                }
+                $stmt->bindValue($index, $value);
+            }
+        }
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if(true === static::$db_debug) {
+            var_dump($stmt->errorInfo());
+        }
+        return $row;
+    }
+
+    /**
+     * @return boolean
+     */
+    public static function isDbDebug(): bool
+    {
+        return self::$db_debug;
+    }
+
 }
