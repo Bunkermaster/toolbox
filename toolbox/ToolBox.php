@@ -126,11 +126,11 @@ class ToolBox
             }
         }
         $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if(true === static::$db_debug) {
             var_dump($stmt->errorInfo());
         }
-        return $row;
+        return $data;
     }
 
     /**
